@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>數學互動教學：期望與加法定律</title>
+    <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+            tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']], displayMath: [['$$','$$'], ['\\[','\\]']]}
+        });
+    </script>
+    <script type="text/javascript" async
+        src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML">
+    </script>
+    <style>
+        body {
+            font-family: 'Arial Unicode MS', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f7f6;
+            color: #333;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            margin-top: 20px;
+            margin-bottom: 80px; /* Space for fixed navigation */
+        }
+        header {
+            background-color: #4CAF50;
+            color: white;
+            padding: 15px 20px;
+            text-align: center;
+            border-radius: 8px 8px 0 0;
+            margin: -20px -20px 20px -20px; /* Adjust to fill container width */
+        }
+        h1, h2, h3 {
+            color: #2e7d32;
+        }
+        h2 {
+            border-bottom: 2px solid #e0e0e0;
+            padding-bottom: 10px;
+            margin-top: 30px;
+        }
+        h3 {
+            color: #1b5e20;
+            margin-top: 25px;
+        }
+        .section-content {
+            display: none;
+        }
+        .section-content.active {
+            display: block;
+        }
+        .navigation {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background-color: #333;
+            padding: 10px 0;
+            display: flex;
+            justify-content: space-around;
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+        }
+        .nav-button {
+            background-color: #66bb6a;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            flex: 1;
+            margin: 0 5px;
+            text-align: center;
+            text-decoration: none;
+            transition: background-color 0.3s ease;
+        }
+        .nav-button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+        .nav-button:hover:not(:disabled) {
+            background-color: #4caf50;
+        }
+        .question {
+            background-color: #e8f5e9;
+            border: 1px solid #c8e6c9;
+            border-radius: 5px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+        .question p {
+            margin-top: 0;
+            font-weight: bold;
+        }
+        .question input[type="text"] {
+            width: calc(100% - 20px);
+            padding: 10px;
+            margin-top: 10px;
+            border: 1px solid #a5d6a7;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        .check-answer-btn {
+            background-color: #2196F3;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+            font-size: 15px;
+            transition: background-color 0.3s ease;
+        }
+        .check-answer-btn:hover {
+            background-color: #1976D2;
+        }
+        .answer-feedback {
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+        .answer-feedback.correct {
+            background-color: #dcedc8;
+            color: #2e7d32;
+        }
+        .answer-feedback.incorrect {
+            background-color: #ffcdd2;
+            color: #d32f2f;
+        }
+        .solution {
+            background-color: #f0f4c3;
+            border: 1px solid #cddc39;
+            border-radius: 5px;
+            padding: 10px;
+            margin-top: 10px;
+            display: none; /* Hidden by default */
+        }
+        .report {
+            background-color: #e3f2fd;
+            border: 1px solid #90caf9;
+            border-radius: 5px;
+            padding: 15px;
+            margin-top: 20px;
+            font-weight: bold;
+            text-align: center;
+        }
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>數學互動教學：概率 (Probabilities)</h1>
+            <p>DVE 職專文憑 Mathematics3C (VMA3030)</p>
+        </header>
+
+        <div id="section0" class="section-content active">
+            <h2>教學理念與導覽</h2>
+            <p>Hello！你好！作為你嘅數學補習老師，我為你準備咗呢份互動教學材料。呢份材料係按照掌握學習法 (Mastery Learning) 設計，目的係確保你喺進入下一部分內容之前，能夠完全理解並掌握當前嘅知識點。每個部分都會有詳細嘅示範、練習同埋小測驗，嚟幫助你逐步建立穩固嘅數學基礎。</p>
+            <p>請點擊下方嘅「下一部分」按鈕，開始你嘅學習旅程啦！</p>
+        </div>
+
+        <div id="section1" class="section-content">
+            <h2>第一部分：預期發生次數 (Expected Times of Occurrence)</h2>
+            <h3>學習目標：</h3>
+            <ul>
+                <li>識別預期發生次數嘅意義。</li>
+                <li>計算某事件喺重複試驗中嘅預期發生次數。</li>
+            </ul>
+
+            <h3>逐步示範：</h3>
+            <p>同學仔，喺概率入面，「預期發生次數」係指我哋預計某個事件會發生幾多次。想像一下，如果你擲一個公平嘅骰仔，想知道「6」會出現幾多次，我哋就可以用呢個概念。</p>
+
+            <p>預期發生次數嘅計算好簡單，我哋只需要知道兩樣嘢：</p>
+            <ol>
+                <li>呢個事件發生嘅概率 ($$p$$)</li>
+                <li>總共進行咗幾多次試驗 ($$n$$)</li>
+            </ol>
+            <p>然後，我哋就可以用以下公式計算：</p>
+            $$ \text{預期發生次數} = n \times p $$
+            <p></p>
+
+            <h4>例子一：擲骰仔 </h4>
+            <p>如果你擲一個公平嘅骰仔 120 次，你預期會擲到幾多次「6」？</p>
+            <p>**解說：**</p>
+            <ol>
+                <li>擲一個公平骰仔，擲到「6」嘅概率 ($$P(\text{"6"}) = \frac{1}{6}$$)。</li>
+                <li>總共試驗次數 ($$n = 120$$)。</li>
+                <li>使用公式：</li>
+            </ol>
+            $$ \text{預期「6」嘅次數} = 120 \times \frac{1}{6} = 20 $$
+            <p>所以，我哋預期會擲到 20 次「6」。</p>
+
+            <h4>例子二：擲兩個硬幣 </h4>
+            <p>如果你同時擲兩個公平嘅硬幣 180 次，你預期會擲到幾多次「兩個公仔 (HH)」？</p>
+            <p>**解說：**</p>
+            <ol>
+                <li>擲兩個公平硬幣，擲到「兩個公仔 (HH)」嘅概率 ($$P(HH) = \frac{1}{2 \times 2} = \frac{1}{4}$$)。</li>
+                <li>總共試驗次數 ($$n = 180$$)。</li>
+                <li>使用公式：</li>
+            </ol>
+            $$ \text{預期「HH」嘅次數} = 180 \times \frac{1}{4} = 45 $$
+            <p>所以，我哋預期會擲到 45 次「兩個公仔」。</p>
+
+            <h3>小練習：測試你嘅掌握程度！</h3>
+            <p>好啦，學完基本概念，係時候做吓練習睇吓你掌握成點啦！以下有 5 條問題，試吓獨立完成佢哋。請輸入你嘅答案，然後點擊「檢查答案」。</p>
+
+            <div class="question" data-question-id="1_1">
+                <p>1. 擲一個公平嘅骰仔 150 次，預期會擲到幾多次「6」？</p>
+                <input type="text" id="q1_1_ans" placeholder="請輸入答案">
+                <button class="check-answer-btn" onclick="checkAnswer('1_1', 30)">檢查答案</button>
+                <div class="answer-feedback" id="q1_1_feedback"></div>
+                <div class="solution" id="q1_1_solution">
+                    <p><strong>答案：</strong>30</p>
+                    <p><strong>解說：</strong></p>
+                    <p>擲到「6」嘅概率 ($$P(\text{"6"}) = \frac{1}{6}$$)。</p>
+                    <p>總共試驗次數 ($$n = 150$$)。</p>
+                    <p>預期發生次數 $$= n \times p = 150 \times \frac{1}{6} = 30$$ 次。 </p>
+                </div>
+            </div>
+
+            <div class="question" data-question-id="1_2">
+                <p>2. 如果擲一個公平嘅硬幣 200 次，預期會有幾多次出現「公仔」？</p>
+                <input type="text" id="q1_2_ans" placeholder="請輸入答案">
+                <button class="check-answer-btn" onclick="checkAnswer('1_2', 100)">檢查答案</button>
+                <div class="answer-feedback" id="q1_2_feedback"></div>
+                <div class="solution" id="q1_2_solution">
+                    <p><strong>答案：</strong>100</p>
+                    <p><strong>解說：</strong></p>
+                    <p>擲到「公仔」嘅概率 ($$P(\text{公仔}) = \frac{1}{2}$$)。</p>
+                    <p>總共試驗次數 ($$n = 200$$)。</p>
+                    <p>預期發生次數 $$= n \times p = 200 \times \frac{1}{2} = 100$$ 次。</p>
+                </div>
+            </div>
+
+            <div class="question" data-question-id="1_3">
+                <p>3. 某種植嘅種子發芽嘅概率係 0.8。如果你種咗 50 粒呢種種子，預期會有幾多粒發芽？</p>
+                <input type="text" id="q1_3_ans" placeholder="請輸入答案">
+                <button class="check-answer-btn" onclick="checkAnswer('1_3', 40)">檢查答案</button>
+                <div class="answer-feedback" id="q1_3_feedback"></div>
+                <div class="solution" id="q1_3_solution">
+                    <p><strong>答案：</strong>40</p>
+                    <p><strong>解說：</strong></p>
+                    <p>發芽嘅概率 ($$P(\text{發芽}) = 0.8$$)。</p>
+                    <p>總共種子數量 ($$n = 50$$)。</p>
+                    <p>預期發芽次數 $$= n \times p = 50 \times 0.8 = 40$$ 粒。</p>
+                </div>
+            </div>
+
+            <div class="question" data-question-id="1_4">
+                <p>4. 一項醫學研究顯示，某種藥物治療好病症嘅成功率係 75%。如果有 80 個病人接受呢種藥物治療，預期會有幾多個病人成功治療？</p>
+                <input type="text" id="q1_4_ans" placeholder="請輸入答案">
+                <button class="check-answer-btn" onclick="checkAnswer('1_4', 60)">檢查答案</button>
+                <div class="answer-feedback" id="q1_4_feedback"></div>
+                <div class="solution" id="q1_4_solution">
+                    <p><strong>答案：</strong>60</p>
+                    <p><strong>解說：</strong></p>
+                    <p>成功治療嘅概率 ($$P(\text{成功}) = 0.75$$)。</p>
+                    <p>總共病人數量 ($$n = 80$$)。</p>
+                    <p>預期成功治療次數 $$= n \times p = 80 \times 0.75 = 60$$ 個。</p>
+                </div>
+            </div>
+
+            <div class="question" data-question-id="1_5">
+                <p>5. 根據歷史數據，某巴士線準時到達嘅概率係 0.9。如果今日有 100 班巴士行駛呢條線，預期有幾多班會準時到達？</p>
+                <input type="text" id="q1_5_ans" placeholder="請輸入答案">
+                <button class="check-answer-btn" onclick="checkAnswer('1_5', 90)">檢查答案</button>
+                <div class="answer-feedback" id="q1_5_feedback"></div>
+                <div class="solution" id="q1_5_solution">
+                    <p><strong>答案：</strong>90</p>
+                    <p><strong>解說：</strong></p>
+                    <p>準時到達嘅概率 ($$P(\text{準時}) = 0.9$$)。</p>
+                    <p>總共巴士班次 ($$n = 100$$)。</p>
+                    <p>預期準時到達次數 $$= n \times p = 100 \times 0.9 = 90$$ 班。</p>
+                </div>
+            </div>
+            <div class="report hidden" id="report1"></div>
+        </div>
+
+        <div id="section2" class="section-content">
+            <h2>第二部分：期望值 (Expected Value)</h2>
+            <h3>學習目標：</h3>
+            <ul>
+                <li>理解期望值嘅意義。</li>
+                <li>計算喺唔同結果下嘅期望值。</li>
+            </ul>
+
+            <h3>逐步示範：</h3>
+            <p>期望值 (Expected Value) 係指喺一個隨機試驗中，所有可能結果嘅數值，按佢哋發生嘅概率加權平均之後嘅總和。佢話俾我哋知，如果重複進行好多好多次試驗，平均嚟講會得到乜嘢數值。 </p>
+            <p>假設一個試驗有 $$n$$ 個可能嘅結果，佢哋發生嘅概率分別係 $$p_1, p_2, ..., p_n$$。如果呢啲結果所對應嘅數值分別係 $$a_1, a_2, ..., a_n$$，咁期望值 (E) 嘅公式就係：</p>
+            $$ E = p_1 a_1 + p_2 a_2 + ... + p_n a_n $$
+
+            <h4>例子三：抽硬幣 </h4>
+            <p>一個袋入面有三個 10 蚊硬幣同兩個 5 蚊硬幣。隨機喺袋入面抽一個硬幣，請問抽到嘅硬幣嘅期望值係幾多？</p>
+            <p>**解說：**</p>
+            <ol>
+                <li>總共有 $$3+2=5$$ 個硬幣。</li>
+                <li>抽到 10 蚊硬幣嘅概率 ($$P(\$10) = \frac{3}{5} = 0.6$$)。</li>
+                <li>抽到 5 蚊硬幣嘅概率 ($$P(\$5) = \frac{2}{5} = 0.4$$)。</li>
+                <li>使用公式：</li>
+            </ol>
+            $$ \text{期望值} = P(\$10) \times 10 + P(\$5) \times 5 $$
+            $$ = 0.6 \times 10 + 0.4 \times 5 = 6 + 2 = 8 $$
+            <p>所以，抽到嘅硬幣嘅期望值係 $$8$$ 蚊。</p>
+
+            <h4>例子四：抽紙幣 </h4>
+            <p>一個箱入面有四張 100 蚊紙幣、三張 50 蚊紙幣、兩張 20 蚊紙幣同埋一張 10 蚊紙幣。隨機喺箱入面抽一張紙幣，請問抽到嘅紙幣嘅期望值係幾多？</p>
+            <p>**解說：**</p>
+            <ol>
+                <li>總共有 $$4+3+2+1=10$$ 張紙幣。</li>
+                <li>各面額紙幣嘅概率：
+                    $$P(\$100) = \frac{4}{10}$$
+                    $$P(\$50) = \frac{3}{10}$$
+                    $$P(\$20) = \frac{2}{10}$$
+                    $$P(\$10) = \frac{1}{10}$$
+                </li>
+                <li>使用公式：</li>
+            </ol>
+            $$ \text{期望值} = P(\$100)\times100 + P(\$50)\times50 + P(\$20)\times20 + P(\$10)\times10 $$
+            $$ = \frac{4}{10}\times100 + \frac{3}{10}\times50 + \frac{2}{10}\times20 + \frac{1}{10}\times10 $$
+            $$ = 40 + 15 + 4 + 1 = 60 $$
+            <p>所以，抽到嘅紙幣嘅期望值係 $$60$$ 蚊。</p>
+
+            <h3>小練習：測試你嘅掌握程度！</h3>
+
+            <div class="question" data-question-id="2_1">
+                <p>1. 從 1 到 7 嘅數字中隨機抽取一個數，呢個數嘅期望值係幾多？</p>
+                <input type="text" id="q2_1_ans" placeholder="請輸入答案">
+                <button class="check-answer-btn" onclick="checkAnswer('2_1', 4)">檢查答案</button>
+                <div class="answer-feedback" id="q2_1_feedback"></div>
+                <div class="solution" id="q2_1_solution">
+                    <p><strong>答案：</strong>4</p>
+                    <p><strong>解說：</strong></p>
+                    <p>呢個係一個等概率分佈，所有數字出現嘅概率都係 $$\frac{1}{7}$$。 </p>
+                    <p>期望值 $$= \frac{1}{7}(1+2+3+4+5+6+7) = \frac{1}{7}(28) = 4$$</p>
+                </div>
+            </div>
+
+            <div class="question" data-question-id="2_2">
+                <p>2. 一個袋入面有三個 10 蚊硬幣、五個 5 蚊硬幣、七個 2 蚊硬幣同埋九個 1 蚊硬幣。隨機喺袋入面抽一個硬幣，請問抽到嘅硬幣嘅期望值係幾多？</p>
+                <input type="text" id="q2_2_ans" placeholder="請輸入答案">
+                <button class="check-answer-btn" onclick="checkAnswer('2_2', 3.25)">檢查答案</button>
+                <div class="answer-feedback" id="q2_2_feedback"></div>
+                <div class="solution" id="q2_2_solution">
+                    <p><strong>答案：</strong>$3.25</p>
+                    <p><strong>解說：</strong></p>
+                    <p>總共硬幣數量 $$= 3+5+7+9 = 24$$ 個。 </p>
+                    <p>期望值 $$= P(\$10)\times10 + P(\$5)\times5 + P(\$2)\times2 + P(\$1)\times1$$</p>
+                    <p>$$= \frac{3}{24}\times10 + \frac{5}{24}\times5 + \frac{7}{24}\times2 + \frac{9}{24}\times1$$</p>
+                    <p>$$= \frac{30}{24} + \frac{25}{24} + \frac{14}{24} + \frac{9}{24} = \frac{78}{24} = 3.25$$</p>
+                </div>
+            </div>
+
+            <div class="question" data-question-id="2_3">
+                <p>3. 一個測驗有 5 條選擇題，每題答啱有 1 分，每條問題有 4 個選項，其中只有一個係正確。如果一個學生每題都隨機選擇答案，請問佢喺呢個測驗嘅期望分數係幾多？</p>
+                <input type="text" id="q2_3_ans" placeholder="請輸入答案">
+                <button class="check-answer-btn" onclick="checkAnswer('2_3', 1.25)">檢查答案</button>
+                <div class="answer-feedback" id="q2_3_feedback"></div>
+                <div class="solution" id="q2_3_solution">
+                    <p><strong>答案：</strong>1.25</p>
+                    <p><strong>解說：</strong></p>
+                    <p>每題答啱嘅概率 ($$P(\text{正確}) = \frac{1}{4}$$)。</p>
+                    <p>每題期望分數 $$= P(\text{正確}) \times 1 = \frac{1}{4} \times 1 = 0.25$$ 分。</p>
+                    <p>總期望分數 $$= \text{每題期望分數} \times \text{題目數量} = 0.25 \times 5 = 1.25$$ 分。 </p>
+                </div>
+            </div>
+
+            <div class="question" data-question-id="2_4">
+                <p>4. 一個抽獎活動設有以下獎項：一張頭獎獎券價值 $1000，三張二獎獎券價值 $200，五張三獎獎券價值 $50。如果總共售出 1000 張獎券，請問隨機抽一張獎券嘅期望獎金係幾多？</p>
+                <input type="text" id="q2_4_ans" placeholder="請輸入答案">
+                <button class="check-answer-btn" onclick="checkAnswer('2_4', 2.25)">檢查答案</button>
+                <div class="answer-feedback" id="q2_4_feedback"></div>
+                <div class="solution" id="q2_4_solution">
+                    <p><strong>答案：</strong>$2.25</p>
+                    <p><strong>解說：</strong></p>
+                    <p>頭獎概率 ($$P(\text{頭獎}) = \frac{1}{1000}$$)，二獎概率 ($$P(\text{二獎}) = \frac{3}{1000}$$)，三獎概率 ($$P(\text{三獎}) = \frac{5}{1000}$$)。</p>
+                    <p>期望獎金 $$= P(\text{頭獎})\times1000 + P(\text{二獎})\times200 + P(\text{三獎})\times50$$</p>
+                    <p>$$= \frac{1}{1000}\times1000 + \frac{3}{1000}\times200 + \frac{5}{1000}\times50$$</p>
+                    <p>$$= 1 + 0.6 + 0.25 = 1.85 + 0.4 = 2.25$$ </p>
+                </div>
+            </div>
+
+            <div class="question" data-question-id="2_5">
+                <p>5. 某遊戲中，擲一個公平骰仔。如果擲到「6」可以贏得 $10，擲到「5」可以贏得 $5，擲到其他數字則輸 $2。請問玩一次遊戲嘅期望收益係幾多？</p>
+                <input type="text" id="q2_5_ans" placeholder="請輸入答案">
+                <button class="check-answer-btn" onclick="checkAnswer('2_5', 0.5)">檢查答案</button>
+                <div class="answer-feedback" id="q2_5_feedback"></div>
+                <div class="solution" id="q2_5_solution">
+                    <p><strong>答案：</strong>$0.5</p>
+                    <p><strong>解說：</strong></p>
+                    <p>擲到「6」嘅概率 ($$P(\text{"6"}) = \frac{1}{6}$$)，收益 $$+10$$。</p>
+                    <p>擲到「5」嘅概率 ($$P(\text{"5"}) = \frac{1}{6}$$)，收益 $$+5$$。</p>
+                    <p>擲到其他數字（1, 2, 3, 4）嘅概率 ($$P(\text{其他}) = \frac{4}{6}$$)，收益 $$-2$$。</p>
+                    <p>期望收益 $$= P(\text{"6"})\times10 + P(\text{"5"})\times5 + P(\text{其他})\times(-2)$$</p>
+                    <p>$$= \frac{1}{6}\times10 + \frac{1}{6}\times5 + \frac{4}{6}\times(-2)$$</p>
+                    <p>$$= \frac{10}{6} + \frac{5}{6} - \frac{8}{6} = \frac{10+5-8}{6} = \frac{7}{6} \approx 0.5$$</p>
+                </div>
+            </div>
+            <div class="report hidden" id="report2"></div>
+        </div>
+
+        <div id="section3" class="section-content">
+            <h2>第三部分：互補事件 (Complementary Events)</h2>
+            <h3>學習目標：</h3>
+            <ul>
+                <li>理解互補事件嘅定義。</li>
+                <li>運用互補事件嘅概率公式解決問題。</li>
+            </ul>
+
+            <h3>逐步示範：</h3>
+            <p>同學仔，「互補事件」係指一個事件「發生」同「唔發生」呢兩種情況。例如，如果你擲一個硬幣，「擲到公仔」同「擲唔到公仔（即係擲到花）」就係互補事件。 </p>
+            <p>如果事件 E 發生嘅概率係 $$P(E)$$，咁事件 E 唔發生嘅互補事件就叫做 $$E'$$（或者 $$E^c$$）。佢哋之間嘅關係好簡單：</p>
+            $$ P(E') = 1 - P(E) $$
+            <p>或者，佢哋兩個嘅概率加埋永遠係 1：</p>
+            $$ P(E') + P(E) = 1 $$
+            <p></p>
+
+            <h4>例子七：擲三個硬幣 </h4>
+            <p>同時擲三個相同嘅公平硬幣，請問擲到「最少一個公仔」嘅概率係幾多？</p>
+            <p>**解說：**</p>
+            <ol>
+                <li>「最少一個公仔」嘅互補事件係「全部都係花 (all tails)」。</li>
+                <li>擲三個硬幣，全部都係花 (TTT) 嘅概率係：
+                    $$P(\text{全部都係花}) = \frac{1}{2 \times 2 \times 2} = \frac{1}{8}$$
+                </li>
+                <li>使用互補事件公式：</li>
+            </ol>
+            $$ P(\text{最少一個公仔}) = 1 - P(\text{全部都係花}) $$
+            $$ = 1 - \frac{1}{8} = \frac{7}{8} $$
+            <p>所以，擲到「最少一個公仔」嘅概率係 $$\frac{7}{8}$$。</p>
+
+            <h4>例子八：三名子女嘅家庭 </h4>
+            <p>一個家庭有三名子女，請問最少有一名係男仔嘅概率係幾多？</p>
+            <p>**解說：**</p>
+            <ol>
+                <li>「最少有一名係男仔」嘅互補事件係「全部都係女仔 (all girls)」。</li>
+                <li>一個子女係女仔嘅概率係 $$\frac{1}{2}$$。三個都係女仔 (GGG) 嘅概率係：
+                    $$P(\text{全部都係女仔}) = \frac{1}{2 \times 2 \times 2} = \frac{1}{8}$$
+                </li>
+                <li>使用互補事件公式：</li>
+            </ol>
+            $$ P(\text{最少一名係男仔}) = 1 - P(\text{全部都係女仔}) $$
+            $$ = 1 - \frac{1}{8} = \frac{7}{8} $$
+            <p>所以，最少有一名係男仔嘅概率係 $$\frac{7}{8}$$。</p>
+
+            <h3>小練習：測試你嘅掌握程度！</h3>
+
+            <div class="question" data-question-id="3_1">
+                <p>1. 擲一個公平嘅骰仔兩次，擲到最少一個雙數嘅概率係幾多？</p>
+                <input type="text" id="q3_1_ans" placeholder="請輸入答案 (小數點後兩位)">
+                <button class="check-answer-btn" onclick="checkAnswer('3_1', 0.75)">檢查答案</button>
+                <div class="answer-feedback" id="q3_1_feedback"></div>
+                <div class="solution" id="q3_1_solution">
+                    <p><strong>答案：</strong>0.75</p>
+                    <p><strong>解說：</strong></p>
+                    <p>「最少一個雙數」嘅互補事件係「兩個都係單數」。</p>
+                    <p>擲一次骰仔擲到單數嘅概率 ($$P(\text{單數}) = \frac{3}{6} = \frac{1}{2}$$)。</p>
+                    <p>兩個都係單數嘅概率 ($$P(\text{兩個都係單數}) = \frac{1}{2} \times \frac{1}{2} = \frac{1}{4} = 0.25$$)。</p>
+                    <p>最少一個雙數嘅概率 $$= 1 - P(\text{兩個都係單數}) = 1 - 0.25 = 0.75$$。 </p>
+                </div>
+            </div>
+
+            <div class="question" data-question-id="3_2">
+                <p>2. 喺一場足球賽事中，A 隊勝出嘅概率係 0.45，B 隊勝出嘅概率係 0.38。請問兩隊打和嘅概率係幾多？</p>
+                <input type="text" id="q3_2_ans" placeholder="請輸入答案 (小數點後兩位)">
+                <button class="check-answer-btn" onclick="checkAnswer('3_2', 0.17)">檢查答案</button>
+                <div class="answer-feedback" id="q3_2_feedback"></div>
+                <div class="solution" id="q3_2_solution">
+                    <p><strong>答案：</strong>0.17</p>
+                    <p><strong>解說：</strong></p>
+                    <p>A 隊勝出同 B 隊勝出係互斥事件。</p>
+                    <p>A 隊或 B 隊勝出嘅概率 ($$P(\text{A 勝或 B 勝}) = P(\text{A 勝}) + P(\text{B 勝}) = 0.45 + 0.38 = 0.83$$)。 </p>
+                    <p>兩隊打和嘅概率係「A 勝或 B 勝」嘅互補事件。</p>
+                    <p>$$P(\text{打和}) = 1 - P(\text{A 勝或 B 勝}) = 1 - 0.83 = 0.17$$。 </p>
+                </div>
+            </div>
+
+            <div class="question" data-question-id="3_3">
+                <p>3. 喺一個射擊遊戲中，A 命中目標嘅概率係 0.45，B 命中目標嘅概率係 0.4。如果佢哋兩個人都命中目標嘅概率係 0.18。請問佢哋兩個人都射失目標嘅概率係幾多？</p>
+                <input type="text" id="q3_3_ans" placeholder="請輸入答案 (小數點後兩位)">
+                <button class="check-answer-btn" onclick="checkAnswer('3_3', 0.33)">檢查答案</button>
+                <div class="answer-feedback" id="q3_3_feedback"></div>
+                <div class="solution" id="q3_3_solution">
+                    <p><strong>答案：</strong>0.33</p>
+                    <p><strong>解說：</strong></p>
+                    <p>首先計算「A 或 B 命中」嘅概率 (P(A 或 B 命中))：</p>
+                    <p>$$P(\text{A 或 B 命中}) = P(\text{A 命中}) + P(\text{B 命中}) - P(\text{A 命中且 B 命中})$$</p>
+                    <p>$$= 0.45 + 0.4 - 0.18 = 0.67$$ </p>
+                    <p>「兩個人都射失」係「A 或 B 命中」嘅互補事件。</p>
+                    <p>$$P(\text{兩個人都射失}) = 1 - P(\text{A 或 B 命中}) = 1 - 0.67 = 0.33$$ </p>
+                </div>
+            </div>
+
+            <div class="question" data-question-id="3_4">
+                <p>4. 喺某個國家，43% 嘅家庭有一個小朋友，28% 有兩個小朋友，6% 有三個小朋友，2% 有三個以上小朋友。如果隨機抽一個家庭，請問呢個家庭冇小朋友嘅概率係幾多？</p>
+                <input type="text" id="q3_4_ans" placeholder="請輸入答案 (小數點後兩位)">
+                <button class="check-answer-btn" onclick="checkAnswer('3_4', 0.21)">檢查答案</button>
+                <div class="answer-feedback" id="q3_4_feedback"></div>
+                <div class="solution" id="q3_4_solution">
+                    <p><strong>答案：</strong>0.21</p>
+                    <p><strong>解說：</strong></p>
+                    <p>「冇小朋友」係「最少有一個小朋友」嘅互補事件。</p>
+                    <p>最少有一個小朋友嘅概率 ($$P(\text{最少一個小朋友}) = P(1 \text{個})+P(2 \text{個})+P(3 \text{個})+P(>3 \text{個})$$)</p>
+                    <p>$$= 0.43 + 0.28 + 0.06 + 0.02 = 0.79$$ </p>
+                    <p>冇小朋友嘅概率 $$= 1 - P(\text{最少一個小朋友}) = 1 - 0.79 = 0.21$$。</p>
+                </div>
+            </div>
+
+            <div class="question" data-question-id="3_5">
+                <p>5. 一個天氣預報表示，聽日落雨嘅概率係 0.3。請問聽日唔落雨嘅概率係幾多？</p>
+                <input type="text" id="q3_5_ans" placeholder="請輸入答案 (小數點後兩位)">
+                <button class="check-answer-btn" onclick="checkAnswer('3_5', 0.70)">檢查答案</button>
+                <div class="answer-feedback" id="q3_5_feedback"></div>
+                <div class="solution" id="q3_5_solution">
+                    <p><strong>答案：</strong>0.70</p>
+                    <p><strong>解說：</strong></p>
+                    <p>「唔落雨」係「落雨」嘅互補事件。</p>
+                    <p>落雨嘅概率 ($$P(\text{落雨}) = 0.3$$)。</p>
+                    <p>唔落雨嘅概率 $$= 1 - P(\text{落雨}) = 1 - 0.3 = 0.7$$。</p>
+                </div>
+            </div>
+            <div class="report hidden" id="report3"></div>
+        </div>
+
+        <div id="section4" class="section-content">
+            <h2>第四部分：加法定律 (Addition Law)</h2>
+            <h3>學習目標：</h3>
+            <ul>
+                <li>理解互斥事件嘅定義。</li>
+                <li>運用加法定律計算事件發生嘅概率，包括互斥事件同非互斥事件。</li>
+            </ul>
+
+            <h3>逐步示範：</h3>
+            <p>同學仔，我哋嚟學「加法定律」啦！呢個定律可以幫我哋計算當兩個或以上事件發生時嘅總概率。首先，我哋要分清楚兩種情況：</p>
+
+            <h4>互斥事件 (Mutually Exclusive Events) </h4>
+            <p>如果兩個事件唔可以同時發生，佢哋就叫做「互斥事件」。例如，你擲一個骰仔，「擲到單數」同「擲到雙數」就係互斥事件，因為你唔會同時擲到單數又擲到雙數。</p>
+            <p>如果事件 E 同事件 F 係互斥事件，咁佢哋其中一個發生嘅概率就係簡單嘅相加：</p>
+            $$ P(E \text{ 或 } F) = P(E) + P(F) $$
+            <p>因為 $$P(E \text{ 且 } F) = 0$$。</p>
+            <p></p>
+
+            <h4>非互斥事件 (Non-Mutually Exclusive Events)</h4>
+            <p>如果兩個事件可以同時發生，佢哋就係「非互斥事件」。例如，你抽一張啤牌，「抽到紅心」同「抽到 K」就係非互斥事件，因為你可能抽到「紅心 K」。</p>
+            <p>如果事件 E 同事件 F 唔係互斥事件，咁佢哋其中一個發生嘅概率公式就要減去佢哋同時發生嘅概率，避免重複計算：</p>
+            $$ P(E \text{ 或 } F) = P(E) + P(F) - P(E \text{ 且 } F) $$
+            <p></p>
+
+            <h4>例子九：抽波仔 </h4>
+            <p>一個袋入面有 2 個紅波、3 個綠波同 4 個藍波。隨機抽一個波，請問：</p>
+            <p>(i) 抽到紅波或綠波嘅概率係幾多？</p>
+            <p>(ii) 抽到紅波或藍波嘅概率係幾多？</p>
+            <p>**解說：**</p>
+            <p>總共有 $$2+3+4=9$$ 個波。</p>
+            <p>(i) 「抽到紅波」同「抽到綠波」係互斥事件，因為你唔會同時抽到紅波又綠波。</p>
+            $$ P(\text{紅波或綠波}) = P(\text{紅波}) + P(\text{綠波}) $$
+            $$ = \frac{2}{9} + \frac{3}{9} = \frac{5}{9} $$
+
+            <p>(ii) 「抽到紅波」同「抽到藍波」亦係互斥事件。</p>
+            $$ P(\text{紅波或藍波}) = P(\text{紅波}) + P(\text{藍波}) $$
+            $$ = \frac{2}{9} + \frac{4}{9} = \frac{6}{9} = \frac{2}{3} $$
+
+            <h4>例子十一：抽啤牌 </h4>
+            <p>從一副撲克牌（52 張）中抽一張牌，請問：</p>
+            <p>(i) 抽到「K」或「Q」嘅概率係幾多？</p>
+            <p>(ii) 抽到「K」或「紅心」嘅概率係幾多？</p>
+            <p>**解說：**</p>
+            <p>(i) 「抽到 K」同「抽到 Q」係互斥事件。</p>
+            <p>$$P(\text{K 或 Q}) = P(\text{K}) + P(\text{Q}) = \frac{4}{52} + \frac{4}{52} = \frac{8}{52} = \frac{2}{13}$$</p>
+
+            <p>(ii) 「抽到 K」同「抽到紅心」唔係互斥事件，因為有「紅心 K」。</p>
+            <p>$$P(\text{K 或 紅心}) = P(\text{K}) + P(\text{紅心}) - P(\text{紅心 K})$$</p>
+            <p>$$= \frac{4}{52} + \frac{13}{52} - \frac{1}{52} = \frac{4+13-1}{52} = \frac{16}{52} = \frac{4}{13}$$</p>
+
+            <h3>小練習：測試你嘅掌握程度！</h3>
+
+            <div class="question" data-question-id="4_1">
+                <p>1. 已知事件 A 同事件 B 唔係互斥事件。如果 $$P(A)=0.3$$，$$P(B)=0.4$$，$$P(A \text{ 或 } B)=0.58$$，請問 $$P(A \text{ 且 } B)$$ 係幾多？</p>
+                <input type="text" id="q4_1_ans" placeholder="請輸入答案 (小數點後兩位)">
+                <button class="check-answer-btn" onclick="checkAnswer('4_1', 0.12)">檢查答案</button>
+                <div class="answer-feedback" id="q4_1_feedback"></div>
+                <div class="solution" id="q4_1_solution">
+                    <p><strong>答案：</strong>0.12</p>
+                    <p><strong>解說：</strong></p>
+                    <p>使用加法定律：$$P(A \text{ 或 } B) = P(A) + P(B) - P(A \text{ 且 } B)$$ </p>
+                    <p>$$0.58 = 0.3 + 0.4 - P(A \text{ 且 } B)$$</p>
+                    <p>$$0.58 = 0.7 - P(A \text{ 且 } B)$$</p>
+                    <p>$$P(A \text{ 且 } B) = 0.7 - 0.58 = 0.12$$ </p>
+                </div>
+            </div>
+
+            <div class="question" data-question-id="4_2">
+                <p>2. 喺一場足球賽事中，A 隊勝出嘅概率係 0.45，B 隊勝出嘅概率係 0.38。請問 A 隊或 B 隊勝出比賽嘅概率係幾多？</p>
+                <input type="text" id="q4_2_ans" placeholder="請輸入答案 (小數點後兩位)">
+                <button class="check-answer-btn" onclick="checkAnswer('4_2', 0.83)">檢查答案</button>
+                <div class="answer-feedback" id="q4_2_feedback"></div>
+                <div class="solution" id="q4_2_solution">
+                    <p><strong>答案：</strong>0.83</p>
+                    <p><strong>解說：</strong></p>
+                    <p>「A 隊勝出」同「B 隊勝出」係互斥事件。</p>
+                    <p>$$P(\text{A 勝或 B 勝}) = P(\text{A 勝}) + P(\text{B 勝}) = 0.45 + 0.38 = 0.83$$ </p>
+                </div>
+            </div>
+
+            <div class="question" data-question-id="4_3">
+                <p>3. 從一副撲克牌（52 張）中抽一張牌，請問抽到一張「Ace」或一張「King」嘅概率係幾多？</p>
+                <input type="text" id="q4_3_ans" placeholder="請輸入答案 (分數形式，例如 1/2)">
+                <button class="check-answer-btn" onclick="checkAnswer('4_3', '2/13')">檢查答案</button>
+                <div class="answer-feedback" id="q4_3_feedback"></div>
+                <div class="solution" id="q4_3_solution">
+                    <p><strong>答案：</strong>2/13</p>
+                    <p><strong>解說：</strong></p>
+                    <p>「抽到 Ace」同「抽到 King」係互斥事件。</p>
+                    <p>$$P(\text{Ace 或 King}) = P(\text{Ace}) + P(\text{King}) = \frac{4}{52} + \frac{4}{52} = \frac{8}{52} = \frac{2}{13}$$ </p>
+                </div>
+            </div>
+
+            <div class="question" data-question-id="4_4">
+                <p>4. 從一副撲克牌（52 張）中抽一張牌，請問抽到一張「Ace」或一張「鑽石 (Diamond)」嘅概率係幾多？</p>
+                <input type="text" id="q4_4_ans" placeholder="請輸入答案 (分數形式，例如 1/2)">
+                <button class="check-answer-btn" onclick="checkAnswer('4_4', '4/13')">檢查答案</button>
+                <div class="answer-feedback" id="q4_4_feedback"></div>
+                <div class="solution" id="q4_4_solution">
+                    <p><strong>答案：</strong>4/13</p>
+                    <p><strong>解說：</strong></p>
+                    <p>「抽到 Ace」同「抽到鑽石」唔係互斥事件，因為有「鑽石 Ace」。</p>
+                    <p>$$P(\text{Ace 或 Diamond}) = P(\text{Ace}) + P(\text{Diamond}) - P(\text{Ace of Diamond})$$</p>
+                    <p>$$= \frac{4}{52} + \frac{13}{52} - \frac{1}{52} = \frac{4+13-1}{52} = \frac{16}{52} = \frac{4}{13}$$ </p>
+                </div>
+            </div>
+
+            <div class="question" data-question-id="4_5">
+                <p>5. 喺一個射擊遊戲中，A 命中目標嘅概率係 0.45，B 命中目標嘅概率係 0.4。如果佢哋兩個人都命中目標嘅概率係 0.18。請問佢哋最少有一個人命中目標嘅概率係幾多？</p>
+                <input type="text" id="q4_5_ans" placeholder="請輸入答案 (小數點後兩位)">
+                <button class="check-answer-btn" onclick="checkAnswer('4_5', 0.67)">檢查答案</button>
+                <div class="answer-feedback" id="q4_5_feedback"></div>
+                <div class="solution" id="q4_5_solution">
+                    <p><strong>答案：</strong>0.67</p>
+                    <p><strong>解說：</strong></p>
+                    <p>「最少有一個人命中」即係「A 命中 或 B 命中」。呢兩個事件唔係互斥，因為佢哋可以同時命中。</p>
+                    <p>$$P(\text{A 或 B 命中}) = P(\text{A 命中}) + P(\text{B 命中}) - P(\text{A 命中且 B 命中})$$</p>
+                    <p>$$= 0.45 + 0.4 - 0.18 = 0.67$$ </p>
+                </div>
+            </div>
+            <div class="report hidden" id="report4"></div>
+        </div>
+
+        <div id="section5" class="section-content">
+            <h2>學習總結</h2>
+            <p>恭喜你完成咗所有章節嘅學習！你已經學習咗「預期」同「加法定律」嘅重要概念，並透過練習鞏固咗你嘅理解。</p>
+            <p>你可以透過下方嘅導航按鈕，隨時溫習任何一個章節嘅內容。</p>
+            <p>繼續努力，數學世界仲有好多有趣嘅嘢等你去發掘㗎！</p>
+        </div>
+
+        <div class="navigation">
+            <button class="nav-button" id="prevBtn" disabled>上一部分</button>
+            <button class="nav-button" id="nextBtn">下一部分</button>
+        </div>
+    </div>
+
+    <script>
+        let currentSectionIndex = 0;
+        const sections = [
+            'section0', 'section1', 'section2', 'section3', 'section4', 'section5'
+        ];
+        const totalQuestions = {
+            'section1': 5,
+            'section2': 5,
+            'section3': 5,
+            'section4': 5
+        };
+        let correctAnswersCount = {
+            'section1': 0,
+            'section2': 0,
+            'section3': 0,
+            'section4': 0
+        };
+        let answeredQuestionsCount = {
+            'section1': 0,
+            'section2': 0,
+            'section3': 0,
+            'section4': 0
+        };
+
+        function showSection(index) {
+            document.querySelectorAll('.section-content').forEach((section, i) => {
+                section.classList.remove('active');
+                if (i === index) {
+                    section.classList.add('active');
+                }
+            });
+            currentSectionIndex = index;
+            updateNavigationButtons();
+            // Scroll to top of the new section for better mobile experience
+            window.scrollTo(0, 0);
+        }
+
+        function updateNavigationButtons() {
+            document.getElementById('prevBtn').disabled = currentSectionIndex === 0;
+            document.getElementById('nextBtn').disabled = currentSectionIndex === sections.length - 1;
+        }
+
+        document.getElementById('prevBtn').addEventListener('click', () => {
+            if (currentSectionIndex > 0) {
+                showSection(currentSectionIndex - 1);
+            }
+        });
+
+        document.getElementById('nextBtn').addEventListener('click', () => {
+            if (currentSectionIndex < sections.length - 1) {
+                showSection(currentSectionIndex + 1);
+            }
+        });
+
+        function checkAnswer(questionId, correctAnswer) {
+            const inputElement = document.getElementById(`q${questionId}_ans`);
+            const feedbackElement = document.getElementById(`q${questionId}_feedback`);
+            const solutionElement = document.getElementById(`q${questionId}_solution`);
+            const buttonElement = inputElement.nextElementSibling; // Get the button next to the input
+
+            let userAnswer = inputElement.value.trim();
+            const sectionKey = `section${questionId.split('_')[0]}`;
+            const questionNumber = questionId.split('_')[1];
+
+            // Normalize answer for comparison
+            let isCorrect = false;
+            if (typeof correctAnswer === 'number') {
+                isCorrect = parseFloat(userAnswer) === correctAnswer;
+            } else if (typeof correctAnswer === 'string' && correctAnswer.includes('/')) { // Handle fractions
+                const [num, den] = correctAnswer.split('/').map(Number);
+                const correctDecimal = num / den;
+                isCorrect = Math.abs(parseFloat(userAnswer) - correctDecimal) < 0.001; // Allow small floating point errors
+            } else { // Direct string comparison (e.g., for fractions as strings)
+                isCorrect = userAnswer === correctAnswer;
+            }
+
+
+            if (!inputElement.disabled) { // Only count if not already answered
+                answeredQuestionsCount[sectionKey]++;
+                if (isCorrect) {
+                    correctAnswersCount[sectionKey]++;
+                }
+            }
+            
+            inputElement.disabled = true; // Disable input after checking
+            buttonElement.disabled = true; // Disable button after checking
+
+            if (isCorrect) {
+                feedbackElement.textContent = '✅ 恭喜你！答案正確！';
+                feedbackElement.className = 'answer-feedback correct';
+            } else {
+                feedbackElement.textContent = '❌ 答案錯誤。';
+                feedbackElement.className = 'answer-feedback incorrect';
+            }
+            solutionElement.style.display = 'block'; // Show solution
+
+            updateReport(sectionKey);
+            // Re-render MathJax for the newly shown solution
+            MathJax.Hub.Queue(["Typeset", MathJax.Hub, solutionElement]);
+        }
+
+        function updateReport(sectionKey) {
+            const reportElement = document.getElementById(`report${sectionKey.replace('section', '')}`);
+            const totalQ = totalQuestions[sectionKey];
+            const correctQ = correctAnswersCount[sectionKey];
+            const answeredQ = answeredQuestionsCount[sectionKey];
+
+            if (answeredQ === totalQ) {
+                reportElement.classList.remove('hidden');
+                reportElement.innerHTML = `
+                    <h3>學習進度報告 (${sectionKey.replace('section', '第')}部分)</h3>
+                    <p>你喺呢部分答對咗 ${correctQ} 題，總共 ${totalQ} 題。</p>
+                    <p>掌握程度：${((correctQ / totalQ) * 100).toFixed(0)}%</p>
+                `;
+            } else {
+                 reportElement.classList.add('hidden');
+            }
+        }
+
+        // Initial setup
+        showSection(0);
+    </script>
+</body>
+</html>
